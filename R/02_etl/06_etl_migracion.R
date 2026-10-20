@@ -368,4 +368,3 @@ print(dbGetQuery(con, "
 dbDisconnect(con)
 
 cat('\n atraccion_indicadores_comparativa creada.\n')
-``
