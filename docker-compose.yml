@@ -1,38 +1,41 @@
+# Municipal Demographic Analysis System - Montilla
+# Usage: copy .env.example to .env, then run `docker compose up -d`
+
 services:
   postgres:
     image: postgres:15
-    container_name: montilla_postgres_entrega
+    container_name: montilla_postgres
     environment:
-      POSTGRES_DB: montilla_db
-      POSTGRES_USER: montilla_user
-      POSTGRES_PASSWORD: montilla_pass
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
     ports:
-      - "5433:5432"
+      - "${DB_EXTERNAL_PORT}:5432"
     volumes:
-      - postgres_data_entrega:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
       - ./database/dump.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
-      - montilla_net_entrega
+      - montilla_net
 
   postgres_superset:
     image: postgres:15
-    container_name: postgres_superset
+    container_name: montilla_postgres_superset
     environment:
-      POSTGRES_DB: superset_db
-      POSTGRES_USER: superset_user
-      POSTGRES_PASSWORD: superset_pass
+      POSTGRES_DB: ${SUPERSET_DB_NAME}
+      POSTGRES_USER: ${SUPERSET_DB_USER}
+      POSTGRES_PASSWORD: ${SUPERSET_DB_PASS}
     volumes:
-      - docker_postgres_superset_data:/var/lib/postgresql/data
+      - postgres_superset_data:/var/lib/postgresql/data
     networks:
-      - montilla_net_entrega
+      - montilla_net
 
   shiny:
     build:
       context: .
       dockerfile: docker/Dockerfile.shiny
-    container_name: montilla_shiny_entrega
+    container_name: montilla_shiny
     ports:
-      - "3839:3838"
+      - "${SHINY_PORT}:3838"
     volumes:
       - ./app:/srv/shiny-server
     depends_on:
@@ -40,22 +43,27 @@ services:
     environment:
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_NAME: montilla_db
-      DB_USER: montilla_user
-      DB_PASS: montilla_pass
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
     networks:
-      - montilla_net_entrega
+      - montilla_net
 
   superset:
     build:
       context: .
       dockerfile: docker/Dockerfile.superset
-    container_name: montilla_superset_entrega
+    container_name: montilla_superset
     ports:
-      - "8088:8088"
+      - "${SUPERSET_PORT}:8088"
     environment:
-      SUPERSET_SECRET_KEY: "superset_secret_key_change_this"
+      SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY}
       SUPERSET_LOAD_EXAMPLES: "no"
+      SUPERSET_ADMIN_USER: ${SUPERSET_ADMIN_USER}
+      SUPERSET_ADMIN_PASSWORD: ${SUPERSET_ADMIN_PASSWORD}
+      SUPERSET_DB_NAME: ${SUPERSET_DB_NAME}
+      SUPERSET_DB_USER: ${SUPERSET_DB_USER}
+      SUPERSET_DB_PASS: ${SUPERSET_DB_PASS}
     depends_on:
       - postgres_superset
       - postgres
@@ -63,16 +71,16 @@ services:
       - ./docker/superset_config.py:/app/pythonpath/superset_config.py:ro
       - ./docker/superset-init.sh:/app/superset-init.sh:ro
       - ./superset/dashboard.zip:/app/dashboard.zip
-      - superset_home_entrega:/app/superset_home
+      - superset_home:/app/superset_home
     command: ["/bin/bash", "/app/superset-init.sh"]
     networks:
-      - montilla_net_entrega
+      - montilla_net
 
 volumes:
-  postgres_data_entrega:
-  superset_home_entrega:
-  docker_postgres_superset_data:
+  postgres_data:
+  superset_home:
+  postgres_superset_data:
 
 networks:
-  montilla_net_entrega:
+  montilla_net:
     driver: bridge

@@ -66,7 +66,7 @@ ind_check_choices <- c(
 conectar_db <- function() {
   dbname <- Sys.getenv("DB_NAME", "montilla_db")
   user <- Sys.getenv("DB_USER", "montilla_user")
-  password <- Sys.getenv("DB_PASS", "montilla_pass")
+  password <- Sys.getenv("DB_PASS")
 
   host_env <- Sys.getenv("DB_HOST", "")
   port_env <- suppressWarnings(as.integer(Sys.getenv("DB_PORT", "")))
@@ -747,7 +747,7 @@ server <- function(input, output, session) {
   # -------------------------------
   # Paro registrado por sexo (2009-2025)
   # NOTA: Los datos de paro deben estar en tabla paro_registrado_montilla_sexo
-  # Si no existen, correr: Scripts/etl_paro_registrado.R
+  # Si no existen, correr: R/02_etl/07_etl_paro_registrado.R
   # -------------------------------
   paro_data <- reactive({
     tryCatch({

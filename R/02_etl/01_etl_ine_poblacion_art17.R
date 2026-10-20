@@ -10,7 +10,7 @@ library(tidyverse)
 library(jsonlite)
 
 # Ruta al archivo JSON
-ruta_json <- "C:/Users/tomas/OneDrive/Master Granada/Practicas Montilla/Datos INE/Demograficos/población de los municipios españoles en aplicación de la Ley de Bases del Régimen Local (Art. 17).json"
+ruta_json <- file.path(Sys.getenv("MONTILLA_DATA_DIR", "."), "Datos INE/Demograficos/población de los municipios españoles en aplicación de la Ley de Bases del Régimen Local (Art. 17).json")
 
 # Cargar el JSON 
 datos <- fromJSON(ruta_json)
@@ -66,11 +66,11 @@ library(RPostgres)
 #Conexión a la base
 con <- dbConnect(
   RPostgres::Postgres(),
-  dbname   = "montilla_db",
-  host     = "localhost",
-  port     = 5432,
-  user     = "montilla_user",
-  password = "montilla_pass"
+  dbname = Sys.getenv("DB_NAME", "montilla_db"),
+  host = Sys.getenv("DB_HOST", "localhost"),
+  port = as.integer(Sys.getenv("DB_PORT", "5432")),
+  user = Sys.getenv("DB_USER", "montilla_user"),
+  password = Sys.getenv("DB_PASS")
 )
 
 # Comprobar conexión

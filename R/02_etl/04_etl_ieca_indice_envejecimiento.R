@@ -1,4 +1,5 @@
-setwd("C:/Users/tomas/OneDrive/Master Granada/Practicas Montilla")
+# Folder that contains the downloaded raw data (see README: "Running the pipeline")
+setwd(Sys.getenv("MONTILLA_DATA_DIR", "."))
 getwd()
 
 # ============================================================
@@ -78,11 +79,11 @@ print(indice_ieca)
 # -------------------------------
 con <- dbConnect(
   RPostgres::Postgres(),
-  dbname   = "montilla_db",
-  host     = "localhost",
-  port     = 5432,
-  user     = "montilla_user",
-  password = "montilla_pass"
+  dbname = Sys.getenv("DB_NAME", "montilla_db"),
+  host = Sys.getenv("DB_HOST", "localhost"),
+  port = as.integer(Sys.getenv("DB_PORT", "5432")),
+  user = Sys.getenv("DB_USER", "montilla_user"),
+  password = Sys.getenv("DB_PASS")
 )
 
 # -------------------------------

@@ -1,22 +1,22 @@
 #!/bin/bash
 
-echo "=== Iniciando configuración de Superset ==="
+echo "=== Starting Superset setup ==="
 
 superset db upgrade
 superset fab create-admin \
-    --username admin \
+    --username "${SUPERSET_ADMIN_USER}" \
     --firstname Admin \
     --lastname Montilla \
-    --email admin@montilla.com \
-    --password admin
+    --email admin@example.com \
+    --password "${SUPERSET_ADMIN_PASSWORD}"
 superset init
 
-# Inyectar dashboard automáticamente si se encuentra el archivo físico
+# Import the Montilla dashboard and charts if the export is available
 if [ -f "/app/dashboard.zip" ]; then
-    echo "=== Importando dashboards y gráficos de Montilla ==="
+    echo "=== Importing Montilla dashboard ==="
     superset import-dashboards -p /app/dashboard.zip
 fi
 
-echo "=== Configuración completada con éxito ==="
+echo "=== Setup completed ==="
 
 superset run -p 8088 -h 0.0.0.0 --with-threads --reload

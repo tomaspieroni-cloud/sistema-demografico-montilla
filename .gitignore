@@ -1,0 +1,18 @@
+# Local configuration and credentials
+.env
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# Raw data (downloaded from INE / IECA, not versioned)
+Datos/
+Datos INE/
+data/raw/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/

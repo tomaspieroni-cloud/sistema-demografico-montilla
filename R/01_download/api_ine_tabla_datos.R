@@ -5,7 +5,8 @@
 # El filtro se hace sobre Nombre (no hay MetaData en este endpoint).
 # ============================================================
 
-setwd("C:/Users/tomas/OneDrive/Master Granada/Practicas Montilla")
+# Folder that contains the downloaded raw data (see README: "Running the pipeline")
+setwd(Sys.getenv("MONTILLA_DATA_DIR", "."))
 
 library(httr)
 library(jsonlite)

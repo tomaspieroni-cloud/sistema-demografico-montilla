@@ -5,7 +5,8 @@
 # Se guarda en Datos/Raw con fecha (para trazabilidad) y un "latest".
 # ============================================================
 
-setwd("C:/Users/tomas/OneDrive/Master Granada/Practicas Montilla")
+# Folder that contains the downloaded raw data (see README: "Running the pipeline")
+setwd(Sys.getenv("MONTILLA_DATA_DIR", "."))
 
 library(httr)
 
